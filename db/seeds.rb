@@ -1,5 +1,11 @@
 #change null to 'NULL'
 
+Senator.create({first_name: "Chuck", last_name: "Schumer"})
+
+chucky = Senator.create({
+	api_id: hash[:id],
+	name: "#{hash[:first_name]} #{hash[:middle_name]} #{last_name}",
+})
 chuck = Senator.create({
                  "id": "S000148",
                  "title": "Senator, 3rd Class",

@@ -44,24 +44,6 @@ ActiveRecord::Schema.define(version: 2019_11_11_214104) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "members", force: :cascade do |t|
-    t.string "first_name"
-    t.string "last_name"
-    t.string "state"
-    t.string "party"
-    t.string "district"
-    t.string "next_election"
-    t.string "url"
-    t.string "phone"
-    t.float "votes_with_party_pct"
-    t.float "votes_against_party_pct"
-    t.float "missed_votes_pct"
-    t.string "congress_id"
-    t.string "state_rank"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "senators", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
