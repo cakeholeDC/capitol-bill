@@ -1,5 +1,6 @@
 require_relative '../API/house_importer.rb'
 require_relative '../API/senate_importer.rb'
+require_relative '../API/bill_importer.rb'
 
 # binding.pry
 ## TYPE exit TO RUN IMPORTER
@@ -37,5 +38,20 @@ HOUSE_MEMBERS.each do |rep|
         votes_with_party_pct: rep[:votes_with_party_pct],
         votes_against_party_pct: rep[:votes_against_party_pct],
         missed_votes_pct: rep[:missed_votes_pct],
+    })
+end
+
+BILLS.each do |bill|
+    Bill.create({
+    slug: bill[:bill_slug],
+    title: bill[:title],
+    primary_subject: bill[:primary_subject],
+    sponsor_id: bill[:sponsor_id],
+    cosponsor_total: bill[:cosponsors],
+    cosponsor_d: bill[:cosponsors_by_party][:D],
+    cosponsor_r: bill[:cosponsors_by_party][:R],
+    cosponsor_i: bill[:cosponsors_by_party][:I],
+    active: bill[:active],
+    pdf_url: bill[:congressdotgov_url]
     })
 end
