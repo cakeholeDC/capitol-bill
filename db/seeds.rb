@@ -52,6 +52,6 @@ BILLS.each do |bill|
     cosponsor_r: bill[:cosponsors_by_party][:R],
     cosponsor_i: bill[:cosponsors_by_party][:I],
     active: bill[:active],
-    pdf_url: bill[:congressdotgov_url]
+    url: bill[:congressdotgov_url]
     })
 end

@@ -7,3 +7,4 @@ gem "pry"
 gem "require_all"
 gem 'launchy'
 gem 'model_un'
+gem 'tty'

@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 2019_11_11_214104) do
     t.integer "cosponsor_r"
     t.integer "cosponsor_i"
     t.boolean "active"
-    t.string "pdf_url"
+    t.string "url"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

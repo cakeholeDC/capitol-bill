@@ -10,7 +10,7 @@ class CreateBillsTable < ActiveRecord::Migration[6.0]
   		t.integer :cosponsor_r
   		t.integer :cosponsor_i
   		t.boolean :active
-  		t.string :pdf_url
+  		t.string :url
   		t.timestamps
   	end
   end
