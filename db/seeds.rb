@@ -46,12 +46,14 @@ BILLS.each do |bill|
     slug: bill[:bill_slug],
     title: bill[:title],
     primary_subject: bill[:primary_subject],
+    sponsor: bill[:sponsor_name],    
     sponsor_id: bill[:sponsor_id],
     cosponsor_total: bill[:cosponsors],
     cosponsor_d: bill[:cosponsors_by_party][:D],
     cosponsor_r: bill[:cosponsors_by_party][:R],
     cosponsor_i: bill[:cosponsors_by_party][:I],
     active: bill[:active],
+    introduced_date: bill[:introduced_date],
     url: bill[:congressdotgov_url]
     })
 end

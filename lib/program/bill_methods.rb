@@ -8,6 +8,7 @@ def bill_by_options
 end
 
 def search_bill_by
+    puts ""
     puts "How would you like to search for a bill?"
     bill_by_options
     search_style = menu_input
@@ -43,10 +44,19 @@ def search_by_term
     bills_matched_by_title = Bill.where('title LIKE ?', "%#{keyword}%")
     bills_matched_by_subject = Bill.where('primary_subject LIKE ?', "%#{keyword}%")
     results = bills_matched_by_title + bills_matched_by_subject
-    #create break for no results
-
+    
     #when results exist
-    narrow_to_one_bill(results.uniq)
+    if results.length > 1
+        narrow_to_one_bill(results.uniq)
+    elsif results.length == 1
+        bill_menu_choice(results[0])
+    else
+        #break for no results
+        puts ""
+        puts "No such bill in our database"
+        search_bill_by
+    end
+
 end
 
 def narrow_to_one_bill(bill_array)
@@ -75,9 +85,39 @@ def search_by_slug
     puts ""
     puts "Please enter a bill slug (for example, sres396 OR hr2781"
     slug = menu_input
-
+    
     bill_selected = Bill.find_by(slug: slug)
-    bill_menu_choice(bill_selected)
+    if bill_selected
+        bill_menu_choice(bill_selected)
+    else
+        puts ""
+        puts "No such bill in our database"
+        search_bill_by
+    end
+end
+
+def recent_list
+    puts ""
+    puts "How many bills would you like to browse? (Limit 20)"
+    # binding.pry
+    quantity = menu_input
+    recent_bills = Bill.order(introduced_date: :desc).limit(quantity.to_i)
+
+    if recent_bills.length > 1
+        narrow_to_one_bill(recent_bills)
+    elsif recent_bills.length == 1
+        bill_menu_choice(recent_bills[0])
+    else
+        puts ""
+        puts "No such bill in our database"
+        search_bill_by
+    end
+end
+
+def search_by_sponsor
+    puts ""
+    puts "Functionality not currently supported"
+    search_bill_by
 end
 
 def bill_menu
@@ -85,22 +125,23 @@ def bill_menu
     puts "  1) Display bill details"
     puts "  2) Display vote totals"
     puts "  3) View bill text"
-    puts "  4) Search for another bill /n"
+    puts "  4) Search for another bill \n "
     puts "Please select an option."
 end
 
 def bill_menu_choice(bill)
+    "Bill Found: #{bill.slug}"
     bill_menu
     choice = menu_input
-
+    
     case choice.to_i
-
+        
     when 1
-        display_bill_details
-
+        display_bill_details(bill)
+        
     when 2
         display_vote_menu
-
+        
     when 3
         Launchy.open("#{bill.url}")
         main_menu
@@ -110,5 +151,27 @@ def bill_menu_choice(bill)
         puts "INVALID INPUT"
         bill_menu_choice(bill)
     end
+end
 
+def display_bill_details(bill)
+    puts ""
+    puts "#{bill.slug}: #{bill.title}"
+    puts "Primary Sponsor: #{bill.sponsor}"
+    puts "Number of cosponsors:"
+    puts "  Total: #{bill.cosponsor_total ? bill.cosponsor_total : 0}"
+    puts "  Democratic co-sponsors: #{bill.cosponsor_d ? bill.cosponsor_d : 0}"
+    puts "  Republican co-sponsors: #{bill.cosponsor_r ? bill.cosponsor_r : 0}"
+    puts "  Independent co-sponsors: #{bill.cosponsor_i ? bill.cosponsor_i : 0}"
+    puts "Primary Topic: #{bill.primary_subject}"
+    puts "Active: #{bill.active}"
+    puts ""
+    puts "Press ENTER to continue"
+    input = menu_input
+    if input
+        bill_menu_choice(bill)
+    end
+end
+
+def display_vote_totals(bill)
+    puts "Functionality is not yet supported"
 end

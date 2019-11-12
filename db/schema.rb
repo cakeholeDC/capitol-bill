@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_11_214104) do
+ActiveRecord::Schema.define(version: 2019_11_12_224137) do
 
   create_table "bills", force: :cascade do |t|
     t.string "slug"
@@ -25,6 +25,8 @@ ActiveRecord::Schema.define(version: 2019_11_11_214104) do
     t.string "url"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "sponsor"
+    t.string "introduced_date"
   end
 
   create_table "house_members", force: :cascade do |t|
