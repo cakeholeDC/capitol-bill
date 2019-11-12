@@ -7,7 +7,7 @@ def welcome
 	puts "Welcome to Capitol Hill"
 end
 
-def bill_or_member
+def main_menu
 	puts "Do you wish to browse by 1) Bills or 2) Members?"
 	input = menu_input
 
@@ -21,7 +21,7 @@ def bill_or_member
 
 	else
 		puts "Invalid Input"
-		bill_or_member 
+		main_menu 
 	end
 
 end
@@ -49,10 +49,10 @@ end
 def member_options_2(body)
 	#body is lowercase 'house' or 'senate'
 	puts "What would you like to search by?"
-	puts "1) Name"
-	puts "2) State"
-	puts "3) Party"
-	puts "4) Return to Previous Menu"
+	puts "   1) Name"
+	puts "   2) State"
+	# puts "   3) Party"
+	puts "   3) Return to Previous Menu"
 	search = menu_input
 
 	case search.to_i
@@ -63,10 +63,10 @@ def member_options_2(body)
 	when 2
 		puts "State Selected"
 		search_by_state(body)
-	when 3
-		puts "Party Time!"
+	# when 3
+	# 	puts "Party Time!"
 
-	when 4
+	when 3
 		member_options_1
 	else
 		puts "Invalid Input"
@@ -82,6 +82,30 @@ def body_to_class(body)
 	(body == "senate") ? Senator : HouseMember
 end
 
+def person_lookup(person, member_type, member_class)
+	#gets the name
+	matched_members = []
+	person.split(' ').each do |name_part|
+		#looks for the first name
+		if member_class.where('first_name = ?', name_part.titlecase).length > 0
+			matched_members = member_class.where('first_name = ? ', name_part.titlecase)
+		#looks for the last name
+		elsif member_class.where('last_name = ? ', name_part.titlecase).length > 0
+			matched_members = member_class.where('last_name = ? ', name_part.titlecase)
+			binding.pry
+		end
+	end
+	binding.pry
+
+	if !matched_members
+		puts "ERROR: That's not a current #{member_type}!"
+	else
+		#returns the array of instances
+		matched_members
+	end
+	
+end
+
 def search_by_name(body)
 	member_type = body_to_title(body)
 	member_class = body_to_class(body)
@@ -90,23 +114,47 @@ def search_by_name(body)
 	person = menu_input
 
 	puts "You entered #{person}"
-	result = member_class.find_by(full_name: person.titlecase)
+	member = member_class.find_by(full_name: person.titlecase)
+	# member = member_class.where('')
+	# binding.pry
 
-	if !result 
-		person.split(' ').each do |name_part|
-			if member_class.find_by(first_name: name_part.titlecase)
-				result = member_class.find_by(first_name: name_part.titlecase)
-			elsif member_class.find_by(last_name: name_part.titlecase)
-				result = member_class.find_by(last_name: name_part.titlecase)
-			end
-		end
-
-		if !result
-			puts "ERROR: That's not a current #{member_type}!"
+	if !member 
+		matched_members = person_lookup(person, member_type, member_class)
+		if matched_members
+			member_ordered_list(matched_members, body)
+			puts "Please select a #{member_type} by number or type 'R', 'D', or 'I' to select a party"
+			selection = menu_input
+			##HELPER TO CONVERT STRING/INTEGERS AS NECESSARY
+			#HELPER TO FILTER BY PARTY
+			member_menu(selection)
+		else
+			#ERROR COMES FROM PERSON LOOKUP
 			search_by_name(body)
 		end
 	end
-	member_menu(result)
+	member_menu(member)
+end
+
+def member_ordered_list(results, body)
+	member_type = body_to_title(body)
+	results.each_with_index do |member, index|
+		if body == "house"
+			district = " - District: #{member.district}"
+		else
+			district = ''
+		end
+
+		puts "#{index+1}) #{member.full_name} - #{member.party}#{district}"
+	end
+	if results.length == 0
+		puts "There are no such #{member_type.pluralize} that match."
+		puts ""
+		member_options_2(body)
+		# search_by_state(body)
+	else
+		puts "#{results.length+1}) Return to Main Menu"
+		puts ""
+	end
 end
 
 def search_by_state(body)
@@ -122,6 +170,8 @@ def search_by_state(body)
 		state = state.upcase
 	end
 
+	## IF DC DO EASTER EGG & BACK TO MENU
+
 	results = member_class.where('state = ?', state) ##is array
 	if body == "house" && results.length > 1
 		# results.each do |member|
@@ -133,24 +183,38 @@ def search_by_state(body)
 	end
 
 	puts ''
-	results.each_with_index do |member, index|
-		if body == "house"
-			district = " - District: #{member.district}"
-		else
-			district = ''
+	member_ordered_list(results, body)
+	# search_by_state(body)
+	
+
+	puts "Please select a #{member_type} by number or type 'R', 'D', or 'I' to select a party"
+	member_select = menu_input
+
+	if member_select.to_i == results.length+1
+	 #return to main menu
+		main_menu
+	elsif member_select.upcase == 'R' || member_select.upcase == 'D' || member_select.upcase == 'I'
+		## DO SOMETHING
+		filtered_results = results.where('party = ?', member_select.upcase)
+		member_ordered_list(filtered_results, body)
+		## todo party name logic
+		if filtered_results.length == 0
+			puts "There are no such #{member_type.pluralize} in that state."
+			search_by_state(body)
 		end
-
-		puts "#{index+1}) #{member.full_name} - #{member.party}#{district}"
+		puts "Please select a #{member_type} by number"
+		##HELPER
+		member_select = menu_input.to_i
+		## unless back to main menu
+		member_menu(filtered_results[member_select-1])	
+	else
+		##HELPER
+		member_select = member_select.to_i
+		## unless back to main menu
+		member_menu(results[member_select-1])	
 	end
-
-	puts "#{results.length+1}) Return to Main Menu"
-	puts ""
-	puts "Please select a #{member_type} by number"
-	member_select = menu_input.to_i
 	##input = results[i+1]
 
-	## unless back to main menu
-	member_menu(results[member_select-1])	
 
 end
 
@@ -164,14 +228,14 @@ def return_to_member_menu(member)
 end
 
 def member_menu(member)
-	puts "What data would you like about #{member.full_name}?"
-	puts "1) Contact Information"
-	puts "2) Sponsored Bills"
-	puts "3) Next Election Year"
-	puts "4) Recent Votes"
-	puts "5) Vote Summary Data"
-	puts "6) Visit Official Website"
-	puts "7) Return to Main Menu"
+	puts "What would you like to learn about #{member.full_name}?"
+	puts "   1) Contact Information"
+	puts "   2) Sponsored Bills"
+	puts "   3) Next Election Year"
+	puts "   4) Recent Votes"
+	puts "   5) Vote Summary Data"
+	puts "   6) Visit Official Website"
+	puts "   7) Return to Main Menu"
 	puts ""
 
 	input = menu_input
@@ -201,7 +265,7 @@ def member_menu(member)
 		Launchy.open("#{member.url}")
 		member_menu(member)
 	when 7 # MAIN MENU
-		bill_or_member
+		main_menu
 	end
 end
 
@@ -211,7 +275,7 @@ end
 
 
 welcome
-bill_or_member
+main_menu
 
 
 
