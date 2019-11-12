@@ -5,3 +5,5 @@ gem "sinatra-activerecord"
 gem "sqlite3", '~> 1.4.0'
 gem "pry"
 gem "require_all"
+gem 'launchy'
+gem 'model_un'
