@@ -288,6 +288,4 @@ end
 welcome
 main_menu
 
-
-
 binding.pry
