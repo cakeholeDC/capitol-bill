@@ -92,10 +92,10 @@ def person_lookup(person, member_type, member_class)
 		#looks for the last name
 		elsif member_class.where('last_name = ? ', name_part.titlecase).length > 0
 			matched_members = member_class.where('last_name = ? ', name_part.titlecase)
-			binding.pry
+			# binding.pry
 		end
 	end
-	binding.pry
+	# binding.pry
 
 	if !matched_members
 		puts "ERROR: That's not a current #{member_type}!"
@@ -123,10 +123,15 @@ def search_by_name(body)
 		if matched_members
 			member_ordered_list(matched_members, body)
 			puts "Please select a #{member_type} by number or type 'R', 'D', or 'I' to select a party"
-			selection = menu_input
+			member_select = menu_input
 			##HELPER TO CONVERT STRING/INTEGERS AS NECESSARY
-			#HELPER TO FILTER BY PARTY
-			member_menu(selection)
+
+			if member_select.to_i == 0
+				filtered_results = filter_by_party(matched_members, member_select, body)
+				select_member_by_number(member_type, filtered_results)
+			else
+				member_menu(matched_members[member_select.to_i-1])		
+			end			
 		else
 			#ERROR COMES FROM PERSON LOOKUP
 			search_by_name(body)
@@ -150,7 +155,6 @@ def member_ordered_list(results, body)
 		puts "There are no such #{member_type.pluralize} that match."
 		puts ""
 		member_options_2(body)
-		# search_by_state(body)
 	else
 		puts "#{results.length+1}) Return to Main Menu"
 		puts ""
@@ -184,39 +188,46 @@ def search_by_state(body)
 
 	puts ''
 	member_ordered_list(results, body)
-	# search_by_state(body)
 	
 
 	puts "Please select a #{member_type} by number or type 'R', 'D', or 'I' to select a party"
 	member_select = menu_input
-
-	if member_select.to_i == results.length+1
-	 #return to main menu
-		main_menu
-	elsif member_select.upcase == 'R' || member_select.upcase == 'D' || member_select.upcase == 'I'
-		## DO SOMETHING
-		filtered_results = results.where('party = ?', member_select.upcase)
-		member_ordered_list(filtered_results, body)
-		## todo party name logic
-		if filtered_results.length == 0
-			puts "There are no such #{member_type.pluralize} in that state."
-			search_by_state(body)
-		end
-		puts "Please select a #{member_type} by number"
-		##HELPER
-		member_select = menu_input.to_i
-		## unless back to main menu
-		member_menu(filtered_results[member_select-1])	
+	# binding.pry
+	if member_select.to_i == 0
+		filtered_results = filter_by_party(results, member_select, body)
+		select_member_by_number(member_type, filtered_results)
 	else
-		##HELPER
-		member_select = member_select.to_i
-		## unless back to main menu
-		member_menu(results[member_select-1])	
+		member_menu(results[member_select.to_i-1])		
 	end
-	##input = results[i+1]
-
-
+	
 end
+
+def select_member_by_number(member_type, filtered_results)
+	puts "Please select a #{member_type} by number"
+		##HELPER
+	member_select = menu_input.to_i
+		if member_select == filtered_results.length + 1
+			main_menu
+		else
+			member_menu(filtered_results[member_select-1])		
+		end
+end
+
+def filter_by_party(results, input, body)
+	if input.to_i == results.length+1
+		#return to main menu
+		   main_menu
+	elsif input.upcase == 'R' || input.upcase == 'D' || input.upcase == 'I'
+		filtered_results = results.where('party = ?', input.upcase)
+		member_ordered_list(filtered_results, body)
+		   ## todo party name logic
+		   if filtered_results.length == 0
+			puts "No #{member_type.pluralize} meet your requirements."
+			member_options_2(body)
+		   end
+		filtered_results
+	end
+end 
 
 def return_to_member_menu(member)
 	puts ''
