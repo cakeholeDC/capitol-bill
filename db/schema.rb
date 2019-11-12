@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 2019_11_11_214104) do
   end
 
   create_table "house_members", force: :cascade do |t|
+    t.string "full_name"
     t.string "first_name"
     t.string "last_name"
     t.string "state"
@@ -45,6 +46,7 @@ ActiveRecord::Schema.define(version: 2019_11_11_214104) do
   end
 
   create_table "senators", force: :cascade do |t|
+    t.string "full_name"
     t.string "first_name"
     t.string "last_name"
     t.string "state"
