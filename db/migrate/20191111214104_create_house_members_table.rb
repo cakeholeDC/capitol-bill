@@ -12,7 +12,7 @@ class CreateHouseMembersTable < ActiveRecord::Migration[6.0]
   		t.float :votes_with_party_pct
   		t.float :votes_against_party_pct
   		t.float :missed_votes_pct
-  		t.string :congress_id
+  		t.string :api_id
   		t.timestamps
   	end
   end
