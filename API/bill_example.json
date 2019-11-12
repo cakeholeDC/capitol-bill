@@ -1,0 +1,75 @@
+{
+   "status":"OK",
+   "copyright":"Copyright (c) 2019 Pro Publica Inc. All Rights Reserved.",
+   "results":[
+      {
+         "bill_id": "hr4322-116",
+         "bill_slug": "hr4322",
+         "congress": "116",
+         "bill": "H.R.4322",
+         "bill_type": "hr",
+         "number": "H.R.4322",
+         "bill_uri": "https://api.propublica.org/congress/v1/116/bills/hr4322.json",
+         "title": "To promote cannabis research, and for other purposes.",
+         "short_title": "Expanding Cannabis Research and Information Act",
+         "sponsor_title": "Rep.",
+         "sponsor": "Donna Shalala",
+         "sponsor_id": "S001206",
+         "sponsor_uri": "https://api.propublica.org/congress/v1/members/S001206.json",
+         "sponsor_party": "D",
+         "sponsor_state": "FL",
+         "gpo_pdf_uri": null,
+         "congressdotgov_url": "https://www.congress.gov/bill/116th-congress/house-bill/4322",
+         "govtrack_url": "https://www.govtrack.us/congress/bills/116/hr4322",
+         "introduced_date": "2019-09-12",
+         "active": false,
+         "last_vote": null,
+         "house_passage": null,
+         "senate_passage": null,
+         "enacted": null,
+         "vetoed": null,
+         "cosponsors": 3,
+         "cosponsors_by_party": {"R":1,"D":2},
+         "withdrawn_cosponsors": 0,
+         "primary_subject": "Health",
+         "committees": "House Judiciary Committee",
+         "committee_codes": ["HSIF"],
+         "subcommittee_codes": ["HSJU08"],
+         "latest_major_action_date": "2019-10-02",
+         "latest_major_action": "Referred to the Subcommittee on Crime, Terrorism, and Homeland Security.",
+         "house_passage_vote": null,
+         "senate_passage_vote": null,
+         "summary": "",
+         "summary_short": "",
+         "versions":[
+         {
+           "status":"Introduced in House",
+           "title":"IH",
+           "url":"https://www.govinfo.gov/content/pkg/BILLS-116hr4322ih/xml/BILLS-116hr4322ih.xml",
+           "congressdotgov_url":"https://www.congress.gov/bill/116th-congress/house-bill/4322/text/ih"
+         }
+         ],
+         "actions":[
+         {
+           "id": 2,
+           "chamber": "House",
+           "action_type": "Committee",
+           "datetime": "2019-10-02",
+           "description": "Referred to the Subcommittee on Crime, Terrorism, and Homeland Security."
+         },
+                  {
+           "id": 1,
+           "chamber": "House",
+           "action_type": "IntroReferral",
+           "datetime": "2019-09-12",
+           "description": "Referred to the Committee on Energy and Commerce, and in addition to the Committee on the Judiciary, for a period to be subsequently determined by the Speaker, in each case for consideration of such provisions as fall within the jurisdiction of the committee concerned."
+         }
+         ],
+         "presidential_statements":[
+],
+         "votes": [
+         ]
+
+      }
+   ]
+}
