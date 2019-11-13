@@ -1,77 +1,176 @@
+def chamber_select_menu
+	puts ""
+	puts "Which chamber of Congress would you like to browse?"
+	puts ''
+	puts "	1) House of Representatives" 
+	puts "	2) Senate"
+	puts ""
 
-def member_options_1
-	puts "Are you looking for a member in the House or Senate?"
-	body = menu_input.downcase
+	chamber = menu_input
 
-	if body == "house"
-		puts "House Selected"
-		member_options_2(body)
-
-	elsif body == "senate"
-		puts "Senate Selected"
-		member_options_2(body)
-
+	if chamber.downcase == "house" || chamber.to_i == 1 || chamber.downcase.include?("house")
+		member_search_options("house")
+	elsif chamber.downcase == "senate" || chamber.to_i == 2
+		member_search_options("senate")
 	else 
-		puts "Invalid Input"
-		member_options_1
-	end
+		puts ''
+		puts "That's not a chamber of Congress; please try again."
+		chamber_select_menu
+	end		
 
-		
 end
 
-def member_options_2(body)
-	#body is lowercase 'house' or 'senate'
-	puts "What would you like to search by?"
-	puts "   1) Name"
-	puts "   2) State"
-	# puts "   3) Party"
-	puts "   3) Return to Previous Menu"
-	search = menu_input
-
-	case search.to_i
-
-	when 1
-		puts "Name Selected"
-		search_by_name(body)
-	when 2
-		puts "State Selected"
-		search_by_state(body)
-	# when 3
-	# 	puts "Party Time!"
-
-	when 3
-		member_options_1
-	else
-		puts "Invalid Input"
-		member_options_2(body)
-	end
-end
-
-def body_to_title(body)
+def member_type(body)
 	(body == "senate") ? "Senator" : "Congressman"
 end
 
-def body_to_class(body)
+def member_class(body)
 	(body == "senate") ? Senator : HouseMember
 end
 
-def person_lookup(person, member_type, member_class)
-	#gets the name
-	matched_members = []
-	person.split(' ').each do |name_part|
-		#looks for the first name
-		if member_class.where('first_name = ?', name_part.titlecase).length > 0
-			matched_members = member_class.where('first_name = ? ', name_part.titlecase)
-		#looks for the last name
-		elsif member_class.where('last_name = ? ', name_part.titlecase).length > 0
-			matched_members = member_class.where('last_name = ? ', name_part.titlecase)
-			# binding.pry
+def member_search_options(body)
+	puts ''
+	puts "How would you like to search for a #{member_type(body)}?"
+	puts ''
+	puts "	1) Search by Name"
+	puts "	2) Search by State"
+	puts "	3) Back Previous Menu"
+	puts "	4) Main Menu"
+	puts ''
+	member_by_options(body)
+end
+
+def member_by_options(body)
+	search = menu_input
+
+	# case search#.to_i
+	if search.to_i == 1 || search.downcase == "name"
+		search_by_name(body)
+	elsif search.to_i == 2 || search.downcase == "state"
+		search_by_state(body)
+	elsif search.to_i == 3 || search.downcase == "back"
+		chamber_select_menu
+	elsif search.to_i == 4 || search.downcase == "main menu"
+		main_menu
+	else
+		puts "Invalid Input"
+		member_by_options(body)
+	end
+end
+
+
+
+def narrow_member_search_results(matched_results, person, chamber)
+	##INSIDE NARROW MEMBER RESULTS
+	binding.pry
+	puts ''
+	puts "Here's all #{member_type(chamber).pluralize} matching '#{person}':"
+	puts ''
+
+	member_ordered_list(matched_results, chamber)
+
+	## @HELPER filter_by_party
+	puts "Please select a #{member_type(chamber)} by number"
+	puts "or type 'R', 'D', or 'I' to select a party"
+	puts ''
+
+	member_or_party = menu_input
+
+	# if R, D or I was entered, this value will be 0
+	if member_or_party.to_i == 0
+
+		# get a list of filtered results
+		filtered_results = filter_by_party(matched_results, member_or_party, chamber)
+		
+		# display the list
+		select_member_by_number(member_type(chamber), filtered_results)
+
+	# if a member number was entered, bring up that members options
+	else
+		member_menu(matched_results[member_or_party.to_i-1])		
+	end	
+end
+
+def search_by_name(chamber)
+	member_class = member_class(chamber)
+
+	puts ''
+	puts "Please enter a #{member_type(chamber)}'s name:"
+	puts ''
+	person = menu_input
+
+	if person.to_i != 0
+		if person.to_i == 4
+			main_menu 
+		else
+			puts "That's not a name."
+			member_search_options(chamber)
 		end
 	end
-	# binding.pry
+
+	#represents an exaxt match by full name
+	member = member_class.find_by(full_name: person.titlecase)
+
+	if !member 
+		# if no exact full name match, continue searching
+
+		# call method to search by first_name and last_name individually
+		search_results = person_lookup(person, member_type(chamber), member_class)
+		if search_results
+
+			if search_results.length > 1
+				narrow_member_search_results(search_results, person, chamber)
+			else
+				member_menu(search_results[0])
+			end
+			
+			# puts ''
+			# puts "Here's all #{member_type(chamber).pluralize} matching '#{person}':"
+			# puts ''
+
+			# member_ordered_list(matched_members, chamber)
+
+			# puts "Please select a #{member_type(chamber)} by number"
+			# puts "or type 'R', 'D', or 'I' to select a party"
+			# puts ''
+			# member_select = menu_input
+			# ##HELPER TO CONVERT STRING/INTEGERS AS NECESSARY
+
+			# if member_select.to_i == 0
+			# 	filtered_results = filter_by_party(matched_members, member_select, chamber)
+			# 	select_member_by_number(member_type(chamber), filtered_results)
+			# else
+			# 	member_menu(matched_members[member_select.to_i-1])		
+			# end			
+		else
+			#ERROR COMES FROM PERSON LOOKUP
+			search_by_name(chamber)
+		end
+	end
+	member_menu(member)
+end
+
+def person_lookup(person, member_type, member_class)
+	
+	matched_members = []
+
+	#gets passed user input as 'person'
+	person.split(' ').each do |name_part|
+		
+		## @BUG - this will only search first_name OR last_name, not both
+		# Example = ['Stewart', 'Cole', 'James', 'Martin'] could be a First Name or a Last Name
+		
+		#looks for first name matches
+		if member_class.where('first_name = ?', name_part.titlecase).length > 0
+			matched_members = member_class.where('first_name = ? ', name_part.titlecase)
+		# looks for last name matches
+		elsif member_class.where('last_name = ? ', name_part.titlecase).length > 0
+			matched_members = member_class.where('last_name = ? ', name_part.titlecase)
+		end
+	end
 
 	if !matched_members
-		puts "ERROR: That's not a current #{member_type}!"
+		puts "No current #{member_type} found matching #{person}."
 	else
 		#returns the array of instances
 		matched_members
@@ -79,55 +178,26 @@ def person_lookup(person, member_type, member_class)
 	
 end
 
-def search_by_name(body)
-	member_type = body_to_title(body)
-	member_class = body_to_class(body)
-
-	puts "Please enter a #{member_type}'s name..."
-	person = menu_input
-
-	puts "You entered #{person}"
-	member = member_class.find_by(full_name: person.titlecase)
-	# member = member_class.where('')
-	# binding.pry
-
-	if !member 
-		matched_members = person_lookup(person, member_type, member_class)
-		if matched_members
-			member_ordered_list(matched_members, body)
-			puts "Please select a #{member_type} by number or type 'R', 'D', or 'I' to select a party"
-			member_select = menu_input
-			##HELPER TO CONVERT STRING/INTEGERS AS NECESSARY
-
-			if member_select.to_i == 0
-				filtered_results = filter_by_party(matched_members, member_select, body)
-				select_member_by_number(member_type, filtered_results)
-			else
-				member_menu(matched_members[member_select.to_i-1])		
-			end			
-		else
-			#ERROR COMES FROM PERSON LOOKUP
-			search_by_name(body)
-		end
-	end
-	member_menu(member)
-end
-
 def member_ordered_list(results, body)
-	member_type = body_to_title(body)
+	member_type = member_type(body)
+	puts ''
 	results.each_with_index do |member, index|
 		if body == "house"
-			district = " - District: #{member.district}"
+			if member.district.length == 1
+				district = " #{member.state}-0#{member.district}"
+			else
+				district = " #{member.state}-#{member.district}"
+			end
 		else
 			district = ''
 		end
 
-		puts "#{index+1}) #{member.full_name} - #{member.party}#{district}"
+		puts "#{index+1}) #{member.full_name} (#{member.party})#{district}"
 	end
 	if results.length == 0
 		puts "There are no such #{member_type.pluralize} that match."
 		puts ""
-		member_options_2(body)
+		member_by_options(body)
 	else
 		puts "#{results.length+1}) Return to Main Menu"
 		puts ""
@@ -135,8 +205,8 @@ def member_ordered_list(results, body)
 end
 
 def search_by_state(body)
-	member_type = body_to_title(body)
-	member_class = body_to_class(body)
+	member_type = member_type(body)
+	member_class = member_class(body)
 	
 	puts "Which state would you like to find #{member_type.pluralize} for?"
 	state = menu_input
@@ -163,9 +233,10 @@ def search_by_state(body)
 	member_ordered_list(results, body)
 	
 
-	puts "Please select a #{member_type} by number or type 'R', 'D', or 'I' to select a party"
+	puts "Please select a #{member_type} by number"
+	puts "or type 'R', 'D', or 'I' to select a party"
 	member_select = menu_input
-	# binding.pry
+	
 	if member_select.to_i == 0
 		filtered_results = filter_by_party(results, member_select, body)
 		select_member_by_number(member_type, filtered_results)
@@ -187,18 +258,25 @@ def select_member_by_number(member_type, filtered_results)
 end
 
 def filter_by_party(results, input, body)
+
+	puts "Please select a #{member_type(body)} by number"
+	puts "or type 'R', 'D', or 'I' to select a party"
+
 	if input.to_i == results.length+1
 		#return to main menu
-		   main_menu
+		main_menu
 	elsif input.upcase == 'R' || input.upcase == 'D' || input.upcase == 'I'
 		filtered_results = results.where('party = ?', input.upcase)
 		member_ordered_list(filtered_results, body)
 		   ## todo party name logic
 		   if filtered_results.length == 0
 			puts "No #{member_type.pluralize} meet your requirements."
-			member_options_2(body)
+			member_by_options(body)
 		   end
 		filtered_results
+	# else
+		# puts "invalid input"
+		# filter_by_party(results, input, body)
 	end
 end 
 
@@ -212,43 +290,51 @@ def return_to_member_menu(member)
 end
 
 def member_menu(member)
+	puts ''
 	puts "What would you like to learn about #{member.full_name}?"
-	puts "   1) Contact Information"
-	puts "   2) Sponsored Bills"
-	puts "   3) Next Election Year"
-	puts "   4) Recent Votes"
-	puts "   5) Vote Summary Data"
-	puts "   6) Visit Official Website"
-	puts "   7) Return to Main Menu"
+	puts "	1) Contact Information"
+	puts "	2) Sponsored Bills"
+	puts "	3) Next Election Year"
+	puts "	4) Recent Votes"
+	puts "	5) Vote Summary Data"
+	puts "	6) Visit Official Website"
+	puts "	7) Return to Main Menu"
 	puts ""
 
 	input = menu_input
 
 	case input.to_i
-	when 1
+	when 1 ## CONTACT INFO
+		puts ''
 		puts "Telephone: #{member.phone}"
 		puts "Website: #{member.url}"
 		return_to_member_menu(member)
-	when 2
-		puts "#{member.full_name}'s Sponsored Bills:"
+	when 2 ## SPONSORED BILLS
+		puts ''
+		puts "this feature is not fully implemented yet, please check back soon"
+		# puts "#{member.full_name}'s Sponsored Bills:"
 		## TO DO
 		return_to_member_menu(member)
-	when 3
+		puts ''
+	when 3 ## TERM END
 		puts "#{member.full_name}'s term ends in #{member.next_election}"
 		return_to_member_menu(member)
-	when 4
+	when 4 ## RECENT VOTES
+		puts ''
+		puts "this feature is not fully implemented yet, please check back soon"
 		## TO DO, RECENT VOTES
 		return_to_member_menu(member)
-	when 5
+	when 5 ## VOTING RECORD
+		puts ''
 		puts "#{member.full_name}'s voting record:"
 		puts "   Votes with own party (#{member.party}): #{member.votes_with_party_pct}\% of the time"
 		puts "   Votes against own party (#{member.party}): #{member.votes_against_party_pct}\% of the time"
 		puts "   Has missed #{member.missed_votes_pct}\% of votes this session"
 		return_to_member_menu(member)
-	when 6
+	when 6 ## WEBSITE
 		Launchy.open("#{member.url}")
 		member_menu(member)
-	when 7 # MAIN MENU
+	when 7 ## MAIN MENU
 		main_menu
 	end
 end
