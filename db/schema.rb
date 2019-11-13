@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_12_224137) do
+ActiveRecord::Schema.define(version: 2019_11_13_195728) do
 
   create_table "bills", force: :cascade do |t|
     t.string "slug"
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(version: 2019_11_12_224137) do
     t.string "vote"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "body"
   end
 
 end
