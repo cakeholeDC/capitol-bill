@@ -55,6 +55,10 @@ def body_to_class(body)
 	(body == "senate") ? Senator : HouseMember
 end
 
+def class_to_title(body_as_class)
+	(body_as_class == Senator) ? "Senator" : "Congressman"
+end
+
 def person_lookup(person, member_type, member_class)
 	#gets the name
 	matched_members = []
