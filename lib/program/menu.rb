@@ -52,7 +52,17 @@ end
         puts "  2) Search by bill slug"
         puts "  3) See most recent active bills"
         puts "  4) Search by sponsor"
-        puts "  5) Return to Main Menu"
+        puts "  5) Bills by superlatives"
+        puts "  6) Return to Main Menu"
+    end
+
+    def superlative_options
+        puts "\nWhat bill would you like to learn about?"
+        puts "  1) Bill with the most cosponsors"
+        puts "  2) Bill with the most absent voters"
+        puts "  3) Bill with the fewest absent voters"
+        puts "  4) Bill with the longest title"
+        puts "  5) Bill with the shortest title"
     end
 
     def request_keyword
@@ -121,20 +131,15 @@ def vote_printout(bill)
     puts "Nay: #{bill.votes.where('vote = ?', "No").count}"
         puts "Present: #{bill.votes.where('vote = ?', "Present").count}"
         puts "Not voting: #{bill.votes.where('vote = ?', "Not Voting").count}"
-    end
+end
 
-    def no_votes
-        puts "\nThis bill has not been voted upon."
-    end
+def no_votes
+    puts "\nThis bill has not been voted upon."
+end
 
-    def no_vote_in_body(body)
-        puts "\nThis bill has not been voted upon in the #{body}"
-    end
-
-    def position_status(vote_cast, lawmaker)
-        binding.pry
-        puts "\n#{lawmaker.full_name}'s position was #{vote_cast.vote} on #{vote_cast.bill.slug}."
-    end
+def no_vote_in_body(body)
+    puts "\nThis bill has not been voted upon in the #{body}"
+end
 
 #Below methods should be moved to Member class
     def member_ordered_list_2(results)

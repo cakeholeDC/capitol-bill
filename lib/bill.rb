@@ -3,6 +3,44 @@ class Bill < ActiveRecord::Base
 	has_many :senators, through: :votes
 	has_many :house_members, through: :votes
 
+	def self.most_not_voting
+		Bill.all.reduce { | memo, bill |
+			memo.votes.where('vote = ?', 'Not Voting').count > bill.votes.where('vote = ?', 'Not Voting').count ? memo : bill
+		}
+	end
+	
+	def self.most_cosponsors
+		Bill.all.reduce { | memo, bill |
+			memo.cosponsor_total > bill.cosponsor_total ? memo : bill 
+		}
+	end
+
+	def real_votes
+		self.votes.where("vote IN ('Yes','No')")
+	end
+
+	def self.least_not_voting
+		all_votes = Vote.all.where("vote in ('Yes','No')")
+		voted_bills = all_votes.map { |vote|
+			vote.bill
+			}.uniq
+		voted_bills.reduce { |memo, bill|
+			memo.votes.where('vote = ?', 'Not Voting').count < bill.votes.where('vote = ?', 'Not Voting').count ? memo : bill
+		}
+	end
+
+	def self.longest_title
+		Bill.all.reduce { |memo, bill|
+			memo.title.length > bill.title.length ? memo : bill
+		}
+	end
+
+	def self.shortest_title
+		Bill.all.reduce { |memo, bill|
+			memo.title.length < bill.title.length ? memo : bill
+		}
+	end
+
 	def self.search_by
 		bill_by_options
         search_style = menu_input
@@ -17,7 +55,9 @@ class Bill < ActiveRecord::Base
             Bill.recent_list
         when 4
             Bill.search_by_sponsor
-        when 5
+		when 5
+			Bill.superlative_menu
+		when 6
             main_menu
         else
             invalid_message
@@ -76,6 +116,10 @@ class Bill < ActiveRecord::Base
 	def self.recent_list
 		request_bill_limit
 		quantity = menu_input
+
+		if quantity.to_i > 20
+			quantity = 20
+		end
 
 		recent_bills = Bill.order(introduced_date: :desc).limit(quantity.to_i)
 
@@ -141,6 +185,28 @@ class Bill < ActiveRecord::Base
 			Bill.narrow_to_one(array_of_bills)
 		else
 			array_of_bills[selection.to_i - 1].bill_menu_choice
+		end
+	end
+
+	def self.superlative_menu
+		superlative_options
+		choice = menu_input
+
+		case choice.to_i
+        
+		when 1
+			Bill.most_cosponsors.bill_menu_choice
+		when 2
+			Bill.most_not_voting.bill_menu_choice
+		when 3
+			Bill.least_not_voting.bill_menu_choice
+		when 4
+			Bill.longest_title.bill_menu_choice
+		when 5
+			Bill.shortest_title.bill_menu_choice
+		else
+			invalid_message
+			self.return_to_menu
 		end
 	end
 
@@ -229,7 +295,7 @@ class Bill < ActiveRecord::Base
 		member_vote = self.votes.find_by('member_id = ?', lawmaker.id)
 
 		if member_vote
-			position_status(member_vote, lawmaker)
+			member_vote.position_status(lawmaker)
 		else
 			member_body = lawmaker.class == Senator ? 'Senate' : 'House'
 			no_vote_in_body(member_body)

@@ -60,6 +60,22 @@ BILLS.each do |bill|
     })
 end
 
+BILLS2.each do |bill|
+    Bill.create({
+    slug: bill[:results][0][:bill_slug],
+    title: bill[:results][0][:title],
+    primary_subject: bill[:results][0][:primary_subject],
+    sponsor: bill[:results][0][:sponsor],
+    sponsor_id: bill[:results][0][:sponsor_id],
+    cosponsor_total: bill[:results][0][:cosponsors],
+    cosponsor_d: bill[:results][0][:cosponsors_by_party][:D],
+    cosponsor_r: bill[:results][0][:cosponsors_by_party][:R],
+    cosponsor_i: bill[:results][0][:cosponsors_by_party][:I],
+    active: bill[:results][0][:active],
+    introduced_date: bill[:results][0][:introduced_date],
+    url: bill[:results][0][:congressdotgov_url]
+    })
+end
 
 def return_member_id(propublica_member_id, body)
     member_class = (body == "Senate") ? Senator : HouseMember
