@@ -7,4 +7,5 @@ gem "pry"
 gem "require_all"
 gem 'launchy'
 gem 'model_un'
+# gem 'image_to_ascii'
 # gem 'tty'

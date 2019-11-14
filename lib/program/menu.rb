@@ -5,25 +5,24 @@ end
 
 def welcome
     puts "\nWelcome to Capitol Hill"
+	# ImageToAscii['./graphics/us_capitol.jpg']
 end
 
 def main_menu
-    puts "\nDo you wish to browse by 1) Bills or 2) Members?"
-    input = menu_input
+    puts "\nDo you wish to browse by 1) Bills or 2) Members?\n"
+    bill_or_member = menu_input
     
-    if input.to_i == 1
-        puts "\nYou've selected Bills."
+    if bill_or_member.to_i == 1 || bill_or_member.downcase == "bills"  || bill_or_member.downcase == "bill"
         Bill.search_by
-        
-    elsif input.to_i == 2
-        puts "\nYou've seleted Members."
-        member_options_1
+          
+    elsif bill_or_member.to_i == 2 || bill_or_member.downcase == "members" || bill_or_member.downcase == "member"
+        # prompt user to select chamber
+        prompt_chamber_select
         
     else
         invalid_message
         main_menu 
     end
-    
 end
 
 def menu_input
@@ -31,9 +30,9 @@ def menu_input
 end
 
 
-    def invalid_message
-        puts "\nInvalid Input"
-    end
+def invalid_message
+    puts "\nInvalid Input"
+end
 
 def enter_to_continue
     puts "\nPress ENTER to continue"
@@ -41,9 +40,62 @@ def enter_to_continue
 end
 
 # --- messages & menus regarding members ---
-    def no_matching_lawmakers
-        puts "No lawmakers match your criteria"
-    end
+def no_matching_lawmakers
+    puts "No lawmakers match your criteria"
+end
+
+def prompt_chamber_select
+	puts "\nWhich chamber of Congress would you like to browse?"
+	puts "\n	1) House of Representatives" 
+	puts "	2) Senate"
+	puts ""
+	get_chamber_input
+end
+
+def chamber_menu
+	puts "\nHow would you like to search for a #{member_type(chamber)}?"
+	puts ''
+	puts "	1) Search by Name"
+	puts "	2) Search by State"
+	puts "	3) Back Previous Menu"
+	puts "	4) Main Menu"
+	puts ''
+end
+
+def get_chamber_input
+	chamber = menu_input
+
+	if chamber.downcase == "house" || chamber.to_i == 1 || chamber.downcase.include?("house")
+		prompt_chamber_options("house")
+	elsif chamber.downcase == "senate" || chamber.to_i == 2
+		prompt_chamber_options("senate")
+	else 
+		puts "\nThat's not a chamber of Congress, please try again."
+		prompt_chamber_select
+	end		
+end
+
+def state_prompt(chamber)
+	puts "\nWhich state would you like to find #{member_type(chamber).pluralize} for?"
+	puts ''
+end
+
+def prompt_member_by_name(chamber)
+	puts "\nPlease enter a #{member_type(chamber)}'s name:"
+	puts ''
+end
+
+def prompt_member_menu(member)
+	puts "\nWhat would you like to learn about #{member.full_name}?"
+	puts "\n	1) Contact Information"
+	puts "	2) Sponsored Bills"
+	puts "	3) Next Election Year"
+	puts "	4) Recent Votes"
+	puts "	5) Vote Summary Data"
+	puts "	6) Visit Official Website"
+	puts "	7) Return to Main Menu"
+	puts ''
+end
 
 # --- messages & menus regarding bills ---
     def bill_by_options
@@ -171,21 +223,10 @@ end
         #gets the name
         matched_members = []
         person.split(' ').each do |name_part|
-            #looks for the first name
-            if HouseMember.where('first_name = ?', name_part.titlecase).length > 0
-                matched_members = HouseMember.where('first_name = ? ', name_part.titlecase)
-            #looks for the last name
-            elsif HouseMember.where('last_name = ? ', name_part.titlecase).length > 0
-                matched_members += HouseMember.where('last_name = ? ', name_part.titlecase)
-            end
-    
-    
-            if Senator.where('first_name = ? ', name_part.titlecase).length > 0
-                matched_members += Senator.where('first_name = ? ', name_part.titlecase)
-            elsif Senator.where('last_name = ? ', name_part.titlecase).length > 0
-                matched_members += Senator.where('last_name = ? ', name_part.titlecase)
-            end
-    
+            matched_members += HouseMember.where('first_name = ? ', name_part.titlecase)
+            matched_members += Senator.where('first_name = ? ', name_part.titlecase)
+            matched_members = HouseMember.where('last_name = ? ', name_part.titlecase)
+            matched_members += Senator.where('last_name = ? ', name_part.titlecase)
         end
     
         if !matched_members
