@@ -60,7 +60,7 @@ class Bill < ActiveRecord::Base
 	end
 
 	def self.search_by_slug
-		puts "\nPlease enter a bill slug (for example, sres396 OR hr2781)"
+		request_slug
 		slug = menu_input
 		
 		bill_selected = Bill.slug_match(slug)
@@ -74,7 +74,7 @@ class Bill < ActiveRecord::Base
 	end
 
 	def self.recent_list
-		puts "\nHow many bills would you like to browse? (Limit 20)"
+		request_bill_limit
 		quantity = menu_input
 
 		recent_bills = Bill.order(introduced_date: :desc).limit(quantity.to_i)
@@ -83,10 +83,10 @@ class Bill < ActiveRecord::Base
 	end
 
 	def self.search_by_sponsor
-		puts "\nPlease enter a lawmaker's name"
+		request_lawmaker_name
 		person = menu_input
 	
-		puts "\nYou entered #{person}"
+		display_entered_value(person)
 		
 		# This should ideally use methods from the Member class. As such it is not yet refactored!
 		member = HouseMember.find_by(full_name: person.titlecase)
@@ -99,7 +99,8 @@ class Bill < ActiveRecord::Base
 			if matched_members
 				member_ordered_list_2(matched_members)
 				
-				puts "Please select a lawmaker by number"
+				request_entry_by_number("lawmaker")
+
 				member_select = menu_input
 				#End of area still to be refactored
 				
@@ -144,7 +145,7 @@ class Bill < ActiveRecord::Base
 	end
 
 	def bill_menu_choice
-		puts "\n  Bill Found: #{self.slug}"
+		display_bill_slug(self)
 		bill_menu
 
 		choice = menu_input
@@ -194,7 +195,7 @@ class Bill < ActiveRecord::Base
 
 	#these methods are more appropriate for the Member class
 	def select_member
-		puts "\nPlease enter a lawmaker's name"
+		request_lawmaker_name
 		name = menu_input
 	end
 
@@ -205,7 +206,7 @@ class Bill < ActiveRecord::Base
 	
 		if matched_members
 			member_ordered_list_2(matched_members)
-			puts "\nPlease select a lawmaker by number"
+			request_entry_by_number("lawmaker")
 			member_select = menu_input
 			
 			if member_select.to_i == (matched_members.length + 1)
@@ -228,10 +229,10 @@ class Bill < ActiveRecord::Base
 		member_vote = self.votes.find_by('member_id = ?', lawmaker.id)
 
 		if member_vote
-			puts "\n#{lawmaker.full_name}'s position was #{member_vote.vote} on #{self.slug}."
+			position_status(member_vote, lawmaker)
 		else
 			member_body = lawmaker.class == Senator ? 'Senate' : 'House'
-			puts "\nThis bill has not been voted on in the #{member_body}"
+			no_vote_in_body(member_body)
 		end
 
 		self.return_to_menu

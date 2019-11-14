@@ -37,7 +37,7 @@ end
 
 def enter_to_continue
     puts "\nPress ENTER to continue"
-    input = menu_input
+    menu_input
 end
 
 # --- messages & menus regarding members ---
@@ -59,48 +59,81 @@ end
         puts "\nPlease enter a keyword"
     end
 
+    def request_slug
+        puts "\nPlease enter a bill slug (for example, sres396 OR hr2781)"
+    end
+
+    def request_bill_limit
+        puts "\nHow many bills would you like to browse? (Limit 20)"
+    end
+
+    def request_lawmaker_name
+		puts "\nPlease enter a lawmaker's name"
+    end
+
+    def display_entered_value(string)
+        puts "\nYou entered #{string}."
+    end
+    
+    def request_entry_by_number(entry_type)
+        puts "Please select a #{entry_type} by number"
+    end
+    
     def no_such_bill
         puts "\nNo such bill in our database."
     end
-
+    
     def list_bills(bill_list)
         puts ""
         bill_list.each_with_index { |bill, index|
-            puts "  #{index+1}) #{bill.slug} - #{bill.title[0..60]}..."
-        }
-        puts "  #{bill_list.length + 1}) Return to Main Menu"
-    end
+        puts "  #{index+1}) #{bill.slug} - #{bill.title[0..60]}..."
+    }
+    puts "  #{bill_list.length + 1}) Return to Main Menu"
+end
 
-    def bill_menu
-        puts "\n  1) Display bill details"
-        puts "  2) Display vote totals"
-        puts "  3) View bill text"
-        puts "  4) Find the position of a specific member"
-        puts "  5) Search for another bill"
-        puts "Please select an option."
-    end
+def bill_menu
+    puts "\n  1) Display bill details"
+    puts "  2) Display vote totals"
+    puts "  3) View bill text"
+    puts "  4) Find the position of a specific member"
+    puts "  5) Search for another bill"
+    puts "Please select an option."
+end
 
-    def bill_detail_printout(bill)
-		puts "\n#{bill.slug}: #{bill.title}"
-		puts "Primary Sponsor: #{bill.sponsor}"
-		puts "Number of cosponsors:"
-		puts "  Total: #{bill.cosponsor_total ? bill.cosponsor_total : 0}"
-		puts "  Democratic co-sponsors: #{bill.cosponsor_d ? bill.cosponsor_d : 0}"
-		puts "  Republican co-sponsors: #{bill.cosponsor_r ? bill.cosponsor_r : 0}"
-		puts "  Independent co-sponsors: #{bill.cosponsor_i ? bill.cosponsor_i : 0}"
-		puts "Primary Topic: #{bill.primary_subject}"
-		puts "Active: #{bill.active}"
-    end
+def display_bill_slug(bill)
+    puts "\n  Bill Found: #{bill.slug}" 
+end
 
-    def vote_printout(bill)
-        puts "\nYea: #{bill.votes.where('vote = ?', "Yes").count}"
-        puts "Nay: #{bill.votes.where('vote = ?', "No").count}"
+def bill_detail_printout(bill)
+    puts "\n#{bill.slug}: #{bill.title}"
+    puts "Primary Sponsor: #{bill.sponsor}"
+    puts "Number of cosponsors:"
+    puts "  Total: #{bill.cosponsor_total ? bill.cosponsor_total : 0}"
+    puts "  Democratic co-sponsors: #{bill.cosponsor_d ? bill.cosponsor_d : 0}"
+    puts "  Republican co-sponsors: #{bill.cosponsor_r ? bill.cosponsor_r : 0}"
+    puts "  Independent co-sponsors: #{bill.cosponsor_i ? bill.cosponsor_i : 0}"
+    puts "Primary Topic: #{bill.primary_subject}"
+    puts "Active: #{bill.active}"
+end
+
+def vote_printout(bill)
+    puts "\nYea: #{bill.votes.where('vote = ?', "Yes").count}"
+    puts "Nay: #{bill.votes.where('vote = ?', "No").count}"
         puts "Present: #{bill.votes.where('vote = ?', "Present").count}"
         puts "Not voting: #{bill.votes.where('vote = ?', "Not Voting").count}"
     end
 
     def no_votes
         puts "\nThis bill has not been voted upon."
+    end
+
+    def no_vote_in_body(body)
+        puts "\nThis bill has not been voted upon in the #{body}"
+    end
+
+    def position_status(vote_cast, lawmaker)
+        binding.pry
+        puts "\n#{lawmaker.full_name}'s position was #{vote_cast.vote} on #{vote_cast.bill.slug}."
     end
 
 #Below methods should be moved to Member class
