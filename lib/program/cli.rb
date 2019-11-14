@@ -1,10 +1,15 @@
+# require 'image_to_ascii'
+
 def welcome
-	puts "Welcome to Capitol Hill"
 	puts ''
+	puts "Welcome to Capitol Hill"
+	# ImageToAscii['./graphics/us_capitol.jpg']
+	# puts ''
 	main_menu
 end
 
 def main_menu
+	puts ''
 	puts "Do you wish to browse the database by 1) Bills or 2) Members?"
 	puts ''
 	bill_or_member = menu_input
@@ -15,7 +20,7 @@ def main_menu
 
 	elsif bill_or_member.to_i == 2 || bill_or_member.downcase == "members" || bill_or_member.downcase == "member"
 		# prompt user to select chamber
-		chamber_select_menu
+		prompt_chamber_select
 
 	else
 		puts "Invalid Input"
