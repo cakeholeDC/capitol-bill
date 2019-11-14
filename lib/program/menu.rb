@@ -52,7 +52,7 @@ def prompt_chamber_select
 	get_chamber_input
 end
 
-def chamber_menu
+def chamber_menu(chamber)
 	puts "\nHow would you like to search for a #{member_type(chamber)}?"
 	puts ''
 	puts "	1) Search by Name"
@@ -95,6 +95,21 @@ def prompt_member_menu(member)
 	puts "	6) Visit Official Website"
 	puts "	7) Return to Main Menu"
 	puts ''
+end
+
+def display_votes(member)
+    member_votes = Vote.where('member_id = ?', member.id)
+    member_votes.each { |vote_cast|
+    puts "#{vote_cast.bill.slug}: #{vote_cast.vote}"
+    }
+end
+
+def display_voting_record(member)
+    puts "\n#{member.full_name}'s voting record:"
+    puts ''
+    puts "   Votes with own party (#{member.party}): #{member.votes_with_party_pct}\% of the time"
+    puts "   Votes against own party (#{member.party}): #{member.votes_against_party_pct}\% of the time"
+    puts "   Has missed #{member.missed_votes_pct}\% of votes this session"
 end
 
 # --- messages & menus regarding bills ---
@@ -225,13 +240,13 @@ end
         person.split(' ').each do |name_part|
             matched_members += HouseMember.where('first_name = ? ', name_part.titlecase)
             matched_members += Senator.where('first_name = ? ', name_part.titlecase)
-            matched_members = HouseMember.where('last_name = ? ', name_part.titlecase)
+            matched_members += HouseMember.where('last_name = ? ', name_part.titlecase)
             matched_members += Senator.where('last_name = ? ', name_part.titlecase)
         end
     
         if !matched_members
             no_matching_lawmakers
-            Bill.search_by
+            main_menu
         else
             #returns the array of instances
             matched_members

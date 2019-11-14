@@ -7,7 +7,7 @@ def member_class(body)
 end
 
 def prompt_chamber_options(chamber)
-	chamber_menu
+	chamber_menu(chamber)
 	get_chamber_option(chamber)
 end
 
@@ -24,7 +24,7 @@ def get_chamber_option(chamber)
 	elsif search.to_i == 4 || search.downcase == "main menu"
 		main_menu
 	else
-		invalid_input
+		invalid_message
 		get_chamber_option(chamber)
 	end
 end
@@ -125,7 +125,6 @@ def scan_data_for_both_names(person, member_type, member_class)
 	person.split(' ').each do |name_part|
 			matched_members += member_class.where('first_name = ? ', name_part.titlecase)
 			matched_members += member_class.where('last_name = ? ', name_part.titlecase)
-		end
 	end
 
 	if !matched_members
@@ -178,7 +177,7 @@ def filter_by_party(results, chamber, input='')
 		select_member_by_number(chamber, filtered_results)
 
 	elsif member_or_party.to_i == 0 || member_or_party.to_i > results.length + 1
-		invalid_input
+		invalid_message
 		puts ''
 		filter_by_party(results, chamber, input)
 	else
@@ -191,7 +190,7 @@ def select_member_by_number(chamber, member_list)
 	
 	member_select = menu_input.to_i
 		if member_select > member_list.length + 1
-			invalid_input
+			invalid_message
 			puts ''
 			select_member_by_number(chamber, member_list)
 		elsif member_select == member_list.length + 1
@@ -248,8 +247,12 @@ def member_menu(member)
 	when 2 ## SPONSORED BILLS
 		puts "#{member.full_name}'s Sponsored Bills:"
 		sponsored = Bill.bills_by_lawmaker(member)
-		Bill.narrow_to_one(sponsored)
-		
+		if sponsored.length > 0
+			puts "Please select a bill:"
+			Bill.narrow_to_one(sponsored)
+		else
+			no_such_bill
+		end
 		enter_to_return_to_member_menu(member)
 
 	when 3 ## TERM END
@@ -257,7 +260,7 @@ def member_menu(member)
 		enter_to_return_to_member_menu(member)
 	
 	when 4 ## RECENT VOTES
-		puts "\n#{member.full_name}'s voting record:'"
+		puts "\n#{member.full_name}'s voting record:"
 		puts ''
 		display_votes(member)
 	
