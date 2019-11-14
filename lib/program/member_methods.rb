@@ -82,7 +82,7 @@ def prompt_members_with_index(results, search_criteria, chamber, party='')
 		end
 
 		# display an ordered list
-		puts "#{index+1}) #{member.full_name} (#{member.party})#{district}"
+		puts "	#{index+1}) #{member.full_name} (#{member.party})#{district}"
 	end
 
 	if results.length == 0
@@ -222,7 +222,7 @@ def filter_by_party(results, chamber, input='')
 
 		#get user input again
 		select_member_by_number(chamber, filtered_results)
-	elsif member_or_party.to_i == 0
+	elsif member_or_party.to_i == 0 || member_or_party.to_i > results.length + 1
 		puts ''
 		puts 'Invalid Input'
 		puts ''
@@ -237,7 +237,12 @@ def select_member_by_number(chamber, member_list)
 	puts "Please select a #{member_type(chamber)} by number:"
 	
 	member_select = menu_input.to_i
-		if member_select == member_list.length + 1
+		if member_select > member_list.length + 1
+			puts ''
+			puts "Invalid Input"
+			puts ''
+			select_member_by_number(chamber, member_list)
+		elsif member_select == member_list.length + 1
 			main_menu
 		else
 			member_menu(member_list[member_select-1])		
