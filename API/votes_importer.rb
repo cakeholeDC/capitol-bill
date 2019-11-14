@@ -1,6 +1,6 @@
 require 'pry'
 require 'date'
-require_relative './useful-json-files/votes.rb'
+require_relative './used-api-data/votes.rb'
 # NOTES 
 #
 # Importer will fail if any values are "null" or nil

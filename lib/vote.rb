@@ -5,5 +5,7 @@ class Vote < ActiveRecord::Base
 
 	def position_status(lawmaker)
         puts "\n#{lawmaker.full_name}'s position was #{self.vote} on #{self.bill.slug}."
-    end
+	end
+	
+	
 end

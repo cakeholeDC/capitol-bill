@@ -19,8 +19,8 @@ def restart_program
 end
 
 def welcome
+	ascii_us_flag
     puts "\nWelcome to Capitol Hill!"
-	# ImageToAscii['./graphics/us_capitol.jpg']
     puts "Type 'exit' at any time to close the program."
 end
 
@@ -45,7 +45,7 @@ def menu_input
     if input.downcase == "exit"
         end_program
     elsif input.downcase == "trump"
-        #prints whitehouse ASCII
+        ascii_white_house
         invalid_message
         trump_message
         end_program_without_goodbye
@@ -85,10 +85,20 @@ def chamber_menu(chamber)
 	puts "\nHow would you like to search for a #{member_type(chamber)}?"
 	puts ''
 	puts "	1) Search by Name"
-	puts "	2) Search by State"
-	puts "	3) Back Previous Menu"
-	puts "	4) Main Menu"
+    puts "	2) Search by State"
+	puts "	3) #{member_type(chamber).pluralize} by Superlatives"
+	puts "	4) Back Previous Menu"
+	puts "	5) Main Menu"
 	puts ''
+end
+
+def superlative_options_by_chamber(chamber)
+	puts "\nHow would you like to search for a #{member_type(chamber)}?"
+	puts ''
+	puts "	1) Most missed votes"
+    puts "	2) Most partisan"
+	puts "	3) Most bipartisan"
+    puts "	4) Back Previous Menu"
 end
 
 def get_chamber_input
@@ -120,10 +130,24 @@ def prompt_member_menu(member)
 	puts "	2) Sponsored Bills"
 	puts "	3) Next Election Year"
 	puts "	4) Recent Votes"
-	puts "	5) Vote Summary Data"
-	puts "	6) Visit Official Website"
-	puts "	7) Return to Main Menu"
+    puts "	5) Vote Summary Data"
+    puts "	6) View #{class_to_title(member.class)}'s State"
+	puts "	7) Visit Official Website"
+	puts "	8) Return to Main Menu"
 	puts ''
+end
+
+def display_state_district(member)    
+    if member.class == HouseMember
+        if member.district.length == 1
+            district = " #{member.state}-0#{member.district}"
+        else
+            district = " #{member.state}-#{member.district}"
+        end
+    else
+        district = " #{member.state}"
+    end
+    puts "\n#{member.full_name} represents #{district}."
 end
 
 def display_votes(member)
@@ -282,6 +306,6 @@ end
         end
     end
 
-    def ascii_flag
+    def tea_party
         puts "Taxation without Representation"
     end

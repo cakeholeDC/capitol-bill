@@ -1,3 +1,6 @@
+
+
+
 def member_type(body)
 	(body == "senate") ? "Senator" : "Congressman"
 end
@@ -19,13 +22,39 @@ def get_chamber_option(chamber)
 		get_member_by_name(chamber)
 	elsif search.to_i == 2 || search.downcase == "state"
 		search_by_state(chamber)
-	elsif search.to_i == 3 || search.downcase == "back"
+	elsif search.to_i == 3 || search.downcase.include?("super")
+		superlative_options_by_chamber(chamber)
+		get_superlative_option(chamber)
+	elsif search.to_i == 4 || search.downcase == "back"
 		prompt_chamber_select
-	elsif search.to_i == 4 || search.downcase == "main menu"
+	elsif search.to_i == 5 || search.downcase == "main menu"
 		main_menu
 	else
 		invalid_message
 		get_chamber_option(chamber)
+	end
+end
+
+def get_superlative_option(chamber)
+	choice = menu_input
+
+	case choice.to_i
+
+	when 1
+		puts "#{member_class(chamber).most_missed_votes.full_name} has missed #{member_class(chamber).most_missed_votes.missed_votes_pct} votes."
+		member_menu(member_class(chamber).most_missed_votes)
+	when 2
+		puts "#{member_class(chamber).most_partisan.full_name} is the most partisan member of the #{chamber}."
+		member_menu(member_class(chamber).most_partisan)
+	when 3
+		puts "#{member_class(chamber).most_bipartisan.full_name} is the most bipartisan member of the #{chamber}."
+		member_menu(member_class(chamber).most_bipartisan)
+	when 4
+		chamber_menu(chamber)
+	else
+		invalid_message
+		superlative_options_by_chamber(chamber)
+		get_superlative_option(chamber)
 	end
 end
 
@@ -60,7 +89,7 @@ def prompt_members_with_index(results, search_criteria, chamber, party='')
 		prompt_chamber_options(chamber)
 	else
 		#output one final option to return to main menu
-		puts "#{results.length+1}) Return to Main Menu"
+		puts "	#{results.length+1}) Return to Main Menu"
 		puts ''
 	end
 end
@@ -212,7 +241,8 @@ def search_by_state(chamber)
 	end
 
 	if chamber == "senate" && state == "DC"
-		ascii_flag
+		ascii_dc_flag
+		tea_party
 	end
 
 	results = member_class(chamber).where('state = ?', state) ##is array
@@ -271,12 +301,16 @@ def member_menu(member)
 	when 5 ## VOTING RECORD
 		display_voting_record(member)
 		enter_to_return_to_member_menu(member)
-	
-	when 6 ## WEBSITE
+		
+	when 6 # SEE STATE
+		display_state_district(member)
+		member_menu(member)
+
+	when 7 ## WEBSITE
 		Launchy.open("#{member.url}")
 		member_menu(member)
 	
-	when 7 ## MAIN MENU
+	when 8 ## MAIN MENU
 		main_menu
 	end
 end

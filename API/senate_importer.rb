@@ -4829,5 +4829,5 @@ api_data = {
 
 # CONGRESS = api_data[:results][0][:congress]
 # CHAMBER = api_data["results"]["Chamber"]
-SENATORS = api_data[:results][0][:members]
+SENATE_MEMBERS = api_data[:results][0][:members]
 # COPYRIGHT = api_data[:copyright]

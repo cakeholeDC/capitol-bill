@@ -1,12 +1,13 @@
 require_relative '../API/house_importer.rb'
 require_relative '../API/senate_importer.rb'
 require_relative '../API/bill_importer.rb'
+require_relative '../API/bill_importer2.rb'
 require_relative '../API/votes_importer.rb'
 require 'date'
 
 # binding.pry
 
-SENATORS.each do |senator|
+SENATE_MEMBERS.each do |senator|
     Senator.create({
         api_id: senator[:id],
         full_name: "#{senator[:first_name]} #{senator[:last_name]}",
