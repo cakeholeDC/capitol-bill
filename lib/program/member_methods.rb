@@ -211,7 +211,9 @@ def search_by_state(chamber)
 		state = state.upcase
 	end
 
-	## IF DC DO EASTER EGG & BACK TO MENU
+	if chamber == "senate" && state == "DC"
+		ascii_flag
+	end
 
 	results = member_class(chamber).where('state = ?', state) ##is array
 	if chamber == "house" && results.length > 1

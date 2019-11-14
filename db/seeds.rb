@@ -5,12 +5,11 @@ require_relative '../API/votes_importer.rb'
 require 'date'
 
 # binding.pry
-## TYPE exit TO RUN IMPORTER
 
 SENATORS.each do |senator|
     Senator.create({
         api_id: senator[:id],
-        full_name: "#{senator[:first_name]} #{senator[:last_name]}", ## TODO update this in the migration
+        full_name: "#{senator[:first_name]} #{senator[:last_name]}",
         first_name: senator[:first_name],
         last_name: senator[:last_name],
         party: senator[:party],
@@ -28,7 +27,7 @@ end
 HOUSE_MEMBERS.each do |rep|
     HouseMember.create({
         api_id: rep[:congress_id],
-        full_name: "#{rep[:first_name]} #{rep[:last_name]}", ## TODO update this in the migration
+        full_name: "#{rep[:first_name]} #{rep[:last_name]}",
         first_name: rep[:first_name],
         last_name: rep[:last_name],
         party: rep[:party],
@@ -76,6 +75,46 @@ BILLS2.each do |bill|
     url: bill[:results][0][:congressdotgov_url]
     })
 end
+
+Bill.create({
+    slug: "schoolhouse",
+    title: "I’m just a bill.
+    Yes, I’m only a bill.
+    And I’m sitting here on Capitol Hill.
+    Well, it’s a long, long journey
+    To the capital city.
+    It’s a long, long wait
+    While I’m sitting in committee,
+    But I know I’ll be a law someday
+    At least I hope and pray that I will,
+    But today I am still just a bill.",
+    primary_subject: "constitution",
+    sponsor: "Mr. Chips",
+    sponsor_id: "S0001973",
+    cosponsor_total: 705,
+    cosponsor_d: 700,
+    cosponsor_r: 0,
+    cosponsor_i: 5,
+    active: true,
+    introduced_date: 1976,
+    url: "https://youtu.be/FFroMQlKiag?t=30"
+    })
+
+HouseMember.create({
+    api_id: "S0001973",
+    full_name: "Mr. Chips",
+    first_name: "Potato",
+    last_name: "Chips",
+    party: "I",
+    state: "Conjunction Junction",
+    district: "AL",
+    next_election: 1976,
+    url: "https://schoolhouserock.fandom.com/wiki/Scooter_Computer_and_Mr._Chips",
+    phone: "202-555-1776",
+    votes_with_party_pct: 100.0,
+    votes_against_party_pct: 0.0,
+    missed_votes_pct: 0.0,
+})
 
 def return_member_id(propublica_member_id, body)
     member_class = (body == "Senate") ? Senator : HouseMember

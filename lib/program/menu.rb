@@ -3,9 +3,25 @@ def start_program
     main_menu
 end
 
+def end_program
+    puts "\nGoodbye"
+    restart_program
+end
+
+def end_program_without_goodbye
+    restart_program
+end
+
+def restart_program
+    puts "\nPress ENTER to restart the program"
+    menu_input
+    start_program
+end
+
 def welcome
-    puts "\nWelcome to Capitol Hill"
+    puts "\nWelcome to Capitol Hill!"
 	# ImageToAscii['./graphics/us_capitol.jpg']
+    puts "Type 'exit' at any time to close the program."
 end
 
 def main_menu
@@ -18,7 +34,6 @@ def main_menu
     elsif bill_or_member.to_i == 2 || bill_or_member.downcase == "members" || bill_or_member.downcase == "member"
         # prompt user to select chamber
         prompt_chamber_select
-        
     else
         invalid_message
         main_menu 
@@ -26,7 +41,21 @@ def main_menu
 end
 
 def menu_input
-    gets.strip
+    input = gets.strip
+    if input.downcase == "exit"
+        end_program
+    elsif input.downcase == "trump"
+        #prints whitehouse ASCII
+        invalid_message
+        trump_message
+        end_program_without_goodbye
+    else
+        input
+    end
+end
+
+def trump_message
+    puts "Did you mean 'impeach'?"
 end
 
 
@@ -251,4 +280,8 @@ end
             #returns the array of instances
             matched_members
         end
+    end
+
+    def ascii_flag
+        puts "Taxation without Representation"
     end
