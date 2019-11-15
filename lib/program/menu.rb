@@ -20,7 +20,7 @@ end
 
 def welcome
 	ascii_us_flag
-    puts "\nWelcome to Capitol Hill!"
+    puts "\nWelcome to Capitol Bill!"
     puts "Type 'exit' at any time to close the program."
 end
 
