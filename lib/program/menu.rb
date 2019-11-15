@@ -45,8 +45,8 @@ def menu_input
     if input.downcase == "exit"
         end_program
     elsif input.downcase == "trump"
-        ascii_white_house
         invalid_message
+        ascii_white_house
         trump_message
         end_program_without_goodbye
     else
