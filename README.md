@@ -80,16 +80,20 @@ ActiveRecord::Base.logger = nil
 <!-- 3. Make sure to create a good README.md with a short description, install instructions, a contributors guide and a link to the license for your code. -->
 
 
-Welcome to Capitol Hill App.
+Welcome to Capitol Bill App.
 
-Capitol Hill will allow you to search for contact information and other data on members of congress
+Capitol Bill will allow you to search for contact information and other data on members of congress
 as well as recent bills that have been introduced and/or voted upon during the current session of Congress. The app utilizes data pulled from the [ProPublica Congress API](https://projects.propublica.org/api-docs/congress-api/#overview).
 
 The current version of the app is v 0.1. It does not pull live API data from ProPublica as a current feature. Data for October 2019 is saved and seeded locally. 
 
 ### Installation
 
-Please clone the repository using (git@github.com:cakeholeDC/module-one-final-project-guidelines-dc-web-102819.git). This is a command line application. You can open the app from the run.rb file located in the bin directory.
+Please clone the repository using (git@github.com:cakeholeDC/module-one-final-project-guidelines-dc-web-102819.git). 
+
+To seed the file, open up your command line application, and enter `rake db:migrate`, then `rake db:seed`.
+
+The Capitol Bill App runs as a command line application. You can open the app from the run.rb file located in the bin directory.
 
 ### Contributing
 
@@ -101,5 +105,3 @@ Please clone the repository using (git@github.com:cakeholeDC/module-one-final-pr
 
 ### License
   Copyright (c) 2019. This product is licensed under a Creative Commons Attribution-NonCommercial-NoDerivs 3.0 United States license. Please see [LICENSE](./LICENSE.md) for more information.
-
-
