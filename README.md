@@ -80,7 +80,7 @@ ActiveRecord::Base.logger = nil
 <!-- 3. Make sure to create a good README.md with a short description, install instructions, a contributors guide and a link to the license for your code. -->
 
 
-# Welcome to Capitol Bill App.
+# Welcome to Capitol Bill
 
 Capitol Bill will allow you to search for contact information and other data on members of congress
 as well as recent bills that have been introduced and/or voted upon during the current session of Congress. The app utilizes data pulled from the [ProPublica Congress API](https://projects.propublica.org/api-docs/congress-api/#overview).
