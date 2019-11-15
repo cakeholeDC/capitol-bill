@@ -169,7 +169,7 @@ def narrow_member_search_results(matched_results, person, chamber)
 
 	# display a list of results with index+1
 	prompt_members_with_index(matched_results, person, chamber)
-	filter_by_party(matched_results, chamber)
+	filter_by_party(matched_results, chamber, person)
 end
 
 def filter_by_party(results, chamber, input='')
@@ -187,7 +187,7 @@ def filter_by_party(results, chamber, input='')
 
 	elsif member_or_party.upcase == 'R' || member_or_party.upcase == 'D' || member_or_party.upcase == 'I'
 
-		filtered_results = results.where('party = ?', member_or_party.upcase)
+		filtered_results = results.select { |member| member.party == member_or_party.upcase }
 
 		if filtered_results.length == 0
 			puts''
@@ -196,10 +196,10 @@ def filter_by_party(results, chamber, input='')
 	   	end
 
 	   	party = member_or_party.upcase == "D" ? "Democratic " 
-	   				: member_or_party.upcase == "R" ? "Reublican " 
+	   				: member_or_party.upcase == "R" ? "Republican " 
 	   				: member_or_party.upcase == "I" ? "Independent " : ''
 
-		##prompt user with a fildered list by party.
+		##prompt user with a filtered list by party.
 		prompt_members_with_index(filtered_results, input, chamber, party)
 
 		#get user input again
