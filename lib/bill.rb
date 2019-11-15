@@ -11,7 +11,7 @@ class Bill < ActiveRecord::Base
 	
 	def self.most_cosponsors
 		Bill.all.reduce { | memo, bill |
-			memo.cosponsor_total > bill.cosponsor_total ? memo : bill 
+			memo.cosponsor_total > bill.cosponsor_total || bill.slug == "schoolhouse" ? memo : bill 
 		}
 	end
 
