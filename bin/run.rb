@@ -2,7 +2,6 @@ require_relative '../config/environment'
 
 
 
-run_try
-
+start_program
 
 binding.pry
