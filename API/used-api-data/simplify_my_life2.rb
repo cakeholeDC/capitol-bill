@@ -4,8 +4,7 @@ require_relative '../votes_importer.rb'
 require 'pry'
 require_relative './votes.rb'
 
-API_KEY_CALL_PREFIX = "spy9tincDlIWwObeGRSAki0dLyrI2n4BzuHyfpc4"
-API_KEY_CALL_PREFIX_BACKUP = "Z2NjClEVvEwMl3quoQKxnMlybpaJe5dRJ39iVYYG"
+
 
 def passage_vote?(rollcall)
     rollcall["results"]["votes"]["vote"]["question"].include?("Passage")

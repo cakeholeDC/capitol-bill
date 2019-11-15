@@ -3,7 +3,6 @@ require 'uri'
 require_relative '../votes_importer.rb'
 require 'pry'
 
-API_KEY_CALL_PREFIX = "Z2NjClEVvEwMl3quoQKxnMlybpaJe5dRJ39iVYYG"
 
 def run_curl(hash)
     my_array = []
