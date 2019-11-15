@@ -1,4 +1,4 @@
-# Module One Final Project Guidelines
+<!-- # Module One Final Project Guidelines
 
 Congratulations, you're at the end of module one! You've worked crazy hard to get here and have learned a ton.
 
@@ -75,4 +75,29 @@ Having built your project on your own with a partner, you are the expert on it! 
 ```ruby
 # in config/environment.rb add this line:
 ActiveRecord::Base.logger = nil
-```
+``` -->
+
+<!-- 3. Make sure to create a good README.md with a short description, install instructions, a contributors guide and a link to the license for your code. -->
+
+
+Welcome to Capitol Hill App.
+
+Capitol Hill will allow you to search for contact information and other data on members of congress
+as well as recent bills that have been introduced and/or voted upon during the current session of Congress. The app utilizes data pulled from the [ProPublica Congress API](https://projects.propublica.org/api-docs/congress-api/#overview).
+
+### Installation
+
+Please clone the repository using (git@github.com:cakeholeDC/module-one-final-project-guidelines-dc-web-102819.git). This is a command line application. You can open the app from the run.rb file located in the bin directory.
+
+### Contributing
+
+  1. Fork it (https://github.com/cakeholeDC/module-one-final-project-guidelines-dc-web-102819/fork)
+  2. Create your feature branch ( git checkout -b my-new-feature )
+  3. Commit your changes ( git commit -am 'Add some feature' )
+  4. Push your branch ( git push origin my-new-feature )
+  5. Create a new Pull Request
+
+### License
+  Copyright (c) 2019. This product is licensed under a Creative Commons Attribution-NonCommercial-NoDerivs 3.0 United States license. Please see [LICENSE](./LICENSE.md) for more information.
+
+
