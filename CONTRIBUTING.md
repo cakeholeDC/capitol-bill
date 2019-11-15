@@ -1,6 +1,6 @@
-# How to contribute to the Capitol Hill App
+# How to contribute to the Capitol Bill App
 
-We're really excited that you're about to contribute to the Capitol Hill App. Here's how to contribute:
+We're really excited that you're about to contribute to Capitol Bill. Here's how to contribute:
 
   1. Fork it (https://github.com/cakeholeDC/module-one-final-project-guidelines-dc-web-102819/fork)
   2. Create your feature branch ( git checkout -b my-new-feature )
